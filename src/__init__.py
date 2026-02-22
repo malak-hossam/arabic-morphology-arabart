@@ -1,0 +1,2 @@
+"""Arabic morphology project package."""
+

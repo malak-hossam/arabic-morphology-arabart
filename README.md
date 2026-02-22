@@ -1,59 +1,118 @@
-# Arabic Morphology Model (AraBART)
+# Arabic Morphology with AraBART
 
-## Project Description
-This project focuses on building an **Arabic Morphology Model** using the **AraBART** architecture fine-tuned on the **MASAQ dataset**.  
-The main objective is to analyze Arabic text, extract key morphological features such as **root, part-of-speech, and case**, and deploy the model via a **FastAPI microservice** for real-time usage.
+Arabic morphology pipeline using AraBART, with reproducible training/inference workflows and FastAPI serving.
 
----
+## Overview
+This repository fine-tunes `moussaKam/AraBART` to generate structured Arabic morphology descriptions from token input.  
+It includes:
+- data preparation from MASAQ-style annotations
+- deterministic train/val/test pipeline
+- model training + checkpoint export
+- inference CLI and API serving
+- tests + CI for baseline maintainability
 
-## Dataset
-The dataset used is **MASAQ (Morphologically-Analyzed and Syntactically-Annotated Quran)**, which provides a rich source of Arabic text annotated with detailed morphological and syntactic information.
+## Architecture
+```mermaid
+flowchart LR
+    A[MASAQ.csv Raw Annotations] --> B[Data Prepare Pipeline]
+    B --> C[morphological_descriptions_cleaned.csv]
+    C --> D[Split Pipeline]
+    D --> E[train.csv]
+    D --> F[val.csv]
+    D --> G[test.csv or morph_test.csv]
+    E --> H[Train Pipeline]
+    F --> H
+    H --> I[trained_arabart_morph_model]
+    I --> J[Infer Pipeline]
+    I --> K[FastAPI /analyze]
+```
 
-### Key Columns:
-- **Word**: Arabic token.  
-- **Root**: Extracted triliteral/quadriliteral root.  
-- **POS (Part of Speech)**: Word type (noun, verb, particle, etc.).  
-- **Case**: Grammatical case (nominative, accusative, etc.).  
-- **Morphological Features**: Gender, number, definiteness, etc.  
+## Quickstart
 
----
+### 1) Environment Setup
+```bash
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
 
-## Objectives
-1. Prepare and clean the MASAQ dataset for modeling.  
-2. Split the dataset into training, validation, and test sets.  
-3. Fine-tune **AraBART** for morphological feature extraction.  
-4. Deploy the trained model as a FastAPI service.  
-5. Provide inference results with high accuracy (achieved ~82%).  
+### 2) Data Preparation
+```bash
+python -m src.pipelines.prepare_pipeline
+python -m src.pipelines.split_pipeline
+```
 
----
+### 3) Model Training
+```bash
+python -m src.pipelines.train_pipeline
+```
 
-## Project Structure
-The project consists of the following files:
+### 4) Evaluation / Inference
+```bash
+python -m src.pipelines.eval_pipeline --max-samples 100
+python -m src.pipelines.infer_pipeline --text "الكتاب جميل"
+```
 
-- **`prepare_dataset.py`** → Cleans and prepares the raw MASAQ dataset.  
-- **`split_dataset.py`** → Splits data into training, validation, and test sets.  
-- **`train_model.py`** → Fine-tunes AraBART on the cleaned dataset.  
-- **`main.py`** → FastAPI application for real-time inference.  
-- **`requirements.txt`** → List of required dependencies.  
-- **`data/`** → Folder containing the dataset files.  
+### 5) API Serving
+```bash
+uvicorn main:app --reload
+```
 
----
+## Docker
+Build:
+```bash
+docker build -t arabic-morphology-arabart .
+```
 
-## Analysis Overview
-### Data Preparation
-- Cleaned raw MASAQ data and extracted morphological fields.  
-- Normalized root forms for consistency.  
-- Handled missing and inconsistent annotations.  
+Run:
+```bash
+docker run --rm -p 8000:8000 \
+  -e ARABART_MODEL_DIR=/app/trained_arabart_morph_model \
+  -v $(pwd)/trained_arabart_morph_model:/app/trained_arabart_morph_model \
+  arabic-morphology-arabart
+```
 
-### Dataset Splitting
-- Applied an **80/10/10 split** for training, validation, and testing.  
-- Ensured balanced distribution of key morphological categories.  
+## Repo Structure
+```text
+.
+├─ docs/
+├─ src/
+│  ├─ api/
+│  ├─ config/
+│  ├─ data/
+│  ├─ models/
+│  ├─ pipelines/
+│  └─ utils/
+├─ tests/
+├─ scripts/
+├─ prepare_dataset.py   # legacy wrapper
+├─ split_dataset.py     # legacy wrapper
+├─ train_model.py       # legacy wrapper
+└─ main.py              # legacy API entry wrapper
+```
 
-### Model Training
-- Fine-tuned **AraBART** using the Hugging Face `transformers` library.  
-- Optimized with **AdamW optimizer** and **early stopping**.
+## Reproducibility
+- Default config: `src/config/default.yaml`
+- Global seed: configurable (default `42`)
+- Legacy compatibility: original root scripts kept as thin wrappers
 
-### Results
-- Achieved 82% accuracy on morphological feature extraction.
-- Successfully extracted root, part-of-speech, and case.
-- Validated using multiple evaluation metrics across train/val/test sets.
+## Artifacts Not Tracked by Git
+Large datasets and model checkpoints are intentionally excluded (see `.gitignore`):
+- `MASAQ.csv`
+- `morphological_descriptions_cleaned.csv`
+- `data_ready/`
+- `trained_arabart_morph_model/`
+
+To reproduce:
+1. Place raw MASAQ data at `MASAQ.csv`.
+2. Run prepare/split/train pipelines.
+3. Use exported model for API/inference.
+
+
+
+## Documentation
+- `docs/system-design.md`
+- `docs/data-card.md`
+- `docs/model-card.md`
+- `docs/experiments.md`
+- `docs/api.md`

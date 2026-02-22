@@ -1,4 +1,10 @@
 fastapi
 uvicorn
+pydantic
 transformers
 torch
+datasets
+pandas
+scikit-learn
+pyyaml
+pytest

@@ -1,0 +1,55 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Packaging
+*.egg-info/
+build/
+dist/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs and outputs
+logs/
+outputs/
+*.log
+
+# Data artifacts (intentionally not tracked)
+/data/
+/data_ready/
+/raw/
+/processed/
+/MASAQ.csv
+/morphological_descriptions.csv
+/morphological_descriptions_cleaned.csv
+/morph_test.csv
+
+# Model artifacts (intentionally not tracked)
+/trained_arabart_morph_model/
+/arabart_morph_model/
+/models/
+/checkpoints/
+
+# Runtime / cache artifacts
+.cache/
+*.pt
+*.bin
+*.safetensors
