@@ -1,0 +1,38 @@
+MORPH_TAG_AR = {
+    "NOUN": "اسم",
+    "NOUN_PROP": "اسم علم",
+    "NOUN_ABSTRACT": "اسم مجرد",
+    "NOUN_CONCRETE": "اسم محسوس",
+    "ADJ": "صفة",
+    "ADJ_COMP": "صفة مقارنة",
+    "ADJ_QUAL": "صفة نوعية",
+    "ADJ_SUPER": "صفة تفضيل",
+    "VERB": "فعل",
+    "IV": "فعل مضارع",
+    "PV": "فعل ماض",
+    "CV": "فعل أمر",
+    "IV_PASS": "فعل مضارع مجهول",
+    "PV_PASS": "فعل ماض مجهول",
+    "PRON": "ضمير",
+    "PRON_DEM": "اسم إشارة",
+    "PRON_REL": "اسم موصول",
+    "ADV": "ظرف",
+    "PREP": "حرف جر",
+    "PART": "حرف",
+    "PART_NEG": "حرف نفي",
+    "PART_EMPHATIC": "حرف توكيد",
+    "PART_VOC": "أداة نداء",
+    "CONJ": "حرف عطف",
+    "SUB_CONJ": "حرف نصب",
+    "JUS_CONJ": "حرف جزم",
+    "INTG": "أداة استفهام",
+    "DET": "أداة تعريف",
+    "NUM": "عدد",
+    "ABBREV": "اختصار",
+}
+
+DECLINABILITY_AR = {
+    "DECLN": "معرب",
+    "INVAR": "مبني",
+}
+
